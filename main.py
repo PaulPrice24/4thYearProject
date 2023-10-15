@@ -95,6 +95,111 @@ if __name__ == '__main__':
                     speak('Sorry, I did not catch that')
                     print(exception)
 
+
+            if query[0] == 'open':
+                
+                pyautogui.hotkey('win', 's')
+                appOpen = ' '.join(query[1:])
+                time.sleep(2)
+                pyautogui.write(appOpen, interval = 0.1)
+
+                for key in ['enter']:
+                    time.sleep(2)
+                    pyautogui.press(key)
+
+
+            if query[0] == 'keyboard':
+                query.pop(0)
+                
+                x = 1
+
+                while x == 1:
+                    listener = sr.Recognizer()
+                    speak('Keyboard Control enabled')
+
+                    with sr.Microphone() as source:
+                        listener.pause_threshold = 2
+                        input_speech = listener.listen(source)
+
+                    try:
+                        print('Recognizing speech...')
+                        appControl = listener.recognize_google(input_speech, language='en_gb')
+                        print(f'The input speech was: {appControl}')
+
+                        if appControl == 'search':
+                            pyautogui.hotkey('ctrl', 'l')
+                        elif appControl == 'enable typing':
+                            listener = sr.Recognizer()
+                            speak('What would you like to write?')
+
+                            with sr.Microphone() as source:
+                                listener.pause_threshold = 2
+                                input_speech = listener.listen(source)
+
+                            try:
+                                print('Recognizing speech...')
+                                writeCommand = listener.recognize_google(input_speech, language='en_gb')
+                                print(f'The input speech was: {writeCommand}')
+                                pyautogui.write(writeCommand, interval = 0.1)
+
+                            except Exception as exception:
+                                print('Sorry, I did not catch that')
+                                speak('Sorry, I did not catch that')
+                                print(exception)
+
+                        elif appControl == 'press enter':
+                            for key in ['enter']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+                        
+                        elif appControl == 'select':
+                            for key in ['tab']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+
+                        elif appControl == 'up':
+                            for key in ['up']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+
+                        elif appControl == 'down':
+                            for key in ['down']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+                        
+                        elif appControl == 'left':
+                            for key in ['left']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+
+                        elif appControl == 'right':
+                            for key in ['right']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+
+                        elif appControl == 'page up':
+                            for key in ['pageup']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+                        
+                        elif appControl == 'page down':
+                            for key in ['pagedown']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+
+                        elif appControl == 'exit':
+                            break
+
+                        else:
+                            speak('Sorry, I did not catch that')
+
+                    except Exception as exception:
+                        print('Sorry, I did not catch that')
+                        speak('Sorry, I did not catch that')
+                        print(exception)
+                    
+                
+
             if query[0] == 'search':
                 speak('Searching...')
                 query = ' '.join(query[1:])
