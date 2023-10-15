@@ -5,6 +5,9 @@ import webbrowser
 import pyautogui
 import os
 import time
+import openai
+from dotenv import load_dotenv
+load_dotenv()
 
 #Speech engine initialisation
 engine = pyttsx3.init()
@@ -21,6 +24,20 @@ def speak(text, rate =120): #rate is speed of AI voice
     engine.setProperty('rate', rate)
     engine.say(text)
     engine.runAndWait()
+
+def query_openai(prompt = ""):
+    openai.organization = os.environ['OPENAI_ORG']
+    openai.api_key = os.environ['OPENAI_API_KEY']
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        temperature=0.5,
+        max_tokens=100,
+
+    )
+
+    return response.choices[0].text
 
 def parseCommand():
     listener = sr.Recognizer()
@@ -94,6 +111,13 @@ if __name__ == '__main__':
                     print('Sorry, I did not catch that')
                     speak('Sorry, I did not catch that')
                     print(exception)
+
+            if query[0] == 'question':
+                query.pop(0)
+                query = ' '.join(query)
+                speech = query_openai(query)
+                speak("Thinking")
+                speak(speech)
 
 
             if query[0] == 'open':
