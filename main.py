@@ -211,6 +211,31 @@ if __name__ == '__main__':
                                 time.sleep(2)
                                 pyautogui.press(key)
 
+                        elif appControl == 'play':
+                            for key in ['playpause']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+                        
+                        elif appControl == 'pause':
+                            for key in ['playpause']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+
+                        elif appControl == 'lower volume':
+                            for key in ['volumedown']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+                        
+                        elif appControl == 'higher volume':
+                            for key in ['volumeup']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+
+                        elif appControl == 'mute':
+                            for key in ['volumemute']:
+                                time.sleep(2)
+                                pyautogui.press(key)
+
                         elif appControl == 'exit':
                             break
 
