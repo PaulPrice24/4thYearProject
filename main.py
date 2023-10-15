@@ -222,14 +222,20 @@ if __name__ == '__main__':
                                 pyautogui.press(key)
 
                         elif appControl == 'lower volume':
-                            for key in ['volumedown']:
-                                time.sleep(2)
-                                pyautogui.press(key)
+                            while x<=10:
+                                for key in ['volumedown']:
+                                    pyautogui.press(key)
+                                    x+=1
+                                    if x>10:
+                                        break
                         
                         elif appControl == 'higher volume':
-                            for key in ['volumeup']:
-                                time.sleep(2)
-                                pyautogui.press(key)
+                            while x<=10:
+                                for key in ['volumeup']:
+                                    pyautogui.press(key)
+                                    x+=1
+                                    if x>10:
+                                        break
 
                         elif appControl == 'mute':
                             for key in ['volumemute']:
