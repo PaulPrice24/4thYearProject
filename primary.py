@@ -13,6 +13,7 @@ class mainFile(QWidget):
         self.mainUI.setupUi(self)
 
         self.mainUI.pushButton_2.clicked.connect(self.Logout)
+        self.mainUI.pushButton_3.clicked.connect(self.VoiceAssitant)
 
         self.mainUI.movie = QtGui.QMovie("C:\\Users\\paulj\\OneDrive\\Desktop\\GUIimages\\ai.gif")
         self.mainUI.label.setMovie(self.mainUI.movie)
@@ -22,6 +23,10 @@ class mainFile(QWidget):
         from subprocess import call
         self.close()
         call(["python", "mainPage.py"])
+
+    def VoiceAssitant(self):
+        from subprocess import call
+        call(["python", "main.py"])
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
