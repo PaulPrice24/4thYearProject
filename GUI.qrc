@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../GUIimages/ai.gif</file>
+        <file>../GUIimages/loginbutton.png</file>
+        <file>../GUIimages/Regesterbutton.png</file>
+        <file>../GUIimages/help.png</file>
+        <file>../GUIimages/logout.png</file>
+        <file>../GUIimages/menu.png</file>
+        <file>../GUIimages/microphone.png</file>
+    </qresource>
+</RCC>

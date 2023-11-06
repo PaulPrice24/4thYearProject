@@ -1,0 +1,14 @@
+{
+    "files": [
+        "maingui.py",
+        "form.ui",
+        "GUI.qrc",
+        "loginWindow.ui",
+        "register.ui",
+        "mainpage.ui",
+        "../GUIimages/help.png",
+        "../GUIimages/logout.png",
+        "../GUIimages/menu.png",
+        "../GUIimages/microphone.png"
+    ]
+}
