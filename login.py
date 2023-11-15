@@ -1,10 +1,12 @@
 import sys
 import typing
+import bcrypt
 import mysql.connector
 from PyQt5.QtWidgets import QWidget, QLineEdit
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore, QtGui
-
+from tkinter import *
+import tkinter.messagebox
 from loginWindow import Ui_Form
 
 mydb = mysql.connector.connect(
@@ -26,16 +28,24 @@ class login(QWidget):
     def ValidateLogin(self):
         emailInput = self.loginUI.email.text()
         passwordInput = self.loginUI.password.text()
+        password = passwordInput.encode('utf-8')
+
         mycursor = mydb.cursor()
-        sql = "SELECT * FROM userinfo WHERE email=%s and password=%s"
-        mycursor.execute(sql, (emailInput, passwordInput))
-        myresult = mycursor.fetchone()
-        if myresult==None:
-            print("Invalid login")
+        sql = "SELECT password FROM userinfo WHERE email=%s"
+        mycursor.execute(sql, (emailInput,))
+        stored_hashed_password = mycursor.fetchone()
+
+        if stored_hashed_password:
+            if bcrypt.checkpw(password, stored_hashed_password[0].encode('utf-8')):
+                from subprocess import call
+                self.close()
+                call(["python", "primary.py"])
+            else:
+                print("Invalid login")
+                tkinter.messagebox.showinfo("Error", "Invalid Login")
         else:
-            from subprocess import call
-            self.close()
-            call(["python", "primary.py"])
+            print("User not found")
+            tkinter.messagebox.showinfo("Error", "User not found")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

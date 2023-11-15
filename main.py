@@ -4,8 +4,10 @@ import pyttsx3
 import webbrowser
 import pyautogui
 import os
+import wmi
 import time
 import openai
+import pygetwindow as gw
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -87,30 +89,61 @@ if __name__ == '__main__':
 
             if query[0] == 'play' and query[1] == 'music':
                 listener = sr.Recognizer()
-                speak('What would you like to play?')
+                max_attempts = 3
+                attempts = 0
 
-                with sr.Microphone() as source:
-                    listener.pause_threshold = 2
-                    input_speech = listener.listen(source)
+                while attempts < max_attempts:
 
-                try:
-                    print('Recognizing speech...')
-                    song = listener.recognize_google(input_speech, language='en_gb')
-                    print(f'The input speech was: {song}')
-                    os.system("spotify")
-                    time.sleep(10)
-                    pyautogui.hotkey('ctrl', 'l')
-                    time.sleep(2)
-                    pyautogui.write(song, interval = 0.1)
+                    try:
+                        speak('What would you like to play?')
 
-                    for key in ['enter', 'tab', 'enter', 'tab', 'enter']:
+                        with sr.Microphone() as source:
+                            listener.pause_threshold = 2
+                            input_speech = listener.listen(source)
+
+                        print('Recognizing speech...')
+                        song = listener.recognize_google(input_speech, language='en_gb')
+                        print(f'The input speech was: {song}')
+
+                        os.system("spotify")
+                        speak('Opening Spotify')
+                        time.sleep(10)
+                        pyautogui.hotkey('ctrl', 'l')
                         time.sleep(2)
-                        pyautogui.press(key)
+                        pyautogui.write(song, interval=0.1)
 
-                except Exception as exception:
-                    print('Sorry, I did not catch that')
-                    speak('Sorry, I did not catch that')
-                    print(exception)
+                        for key in ['enter', 'tab', 'enter', 'tab', 'enter']:
+                            time.sleep(2)
+
+                            pyautogui.press(key)
+
+                        spotify_window = gw.getWindowsWithTitle("Spotify")[0]
+                        spotify_window.minimize()
+
+                        is_music_playing = True
+
+                        while True:
+                            f = wmi.WMI() 
+                            # Iterating through all the running processes 
+                            for process in f.Win32_Process(): 
+                                if "spotify" == process.Name: 
+                                    time.sleep(10)
+                                    break
+                                else:
+                                    is_music_playing = False
+
+                        break  # Exit the loop if successful
+                    except sr.UnknownValueError:
+                        attempts += 1
+                        print('Sorry, I did not catch that')
+                        speak('Sorry, I did not catch that')
+                    except Exception as exception:
+                        print(f'An error occurred: {exception}')
+                        speak('An error occurred. Please try again.')
+
+                if attempts == max_attempts:
+                    print('Maximum attempts reached. Exiting.')
+                    speak('Maximum attempts reached. Exiting.')
 
             if query[0] == 'question':
                 query.pop(0)
@@ -119,8 +152,27 @@ if __name__ == '__main__':
                 speak("Thinking")
                 speak(speech)
 
+            if query[0] == 'search':
+                speak('Searching...')
+                query = ' '.join(query[1:])
+                webbrowser.open('https://www.google.com/search?q=' + query)
+
+            if query[0] == 'what' and query[1] == 'time' and query[2] == 'is' and query[3] == 'it':
+                speech = datetime.datetime.now().strftime("%H:%M")
+                speak(speech)
+
+            if query[0] == 'what' and query[1] == 'is' and query[2] == 'the' and query[3] == 'time':
+                speech = datetime.datetime.now().strftime("%H:%M")
+                speak(speech)
+
+            if query[0] == 'exit':
+                speak('Goodbye')
+                break
+
 
             if query[0] == 'open':
+
+                speak('Opening')
                 
                 pyautogui.hotkey('win', 's')
                 appOpen = ' '.join(query[1:])
@@ -130,6 +182,19 @@ if __name__ == '__main__':
                 for key in ['enter']:
                     time.sleep(2)
                     pyautogui.press(key)
+
+            if query[0] == 'close':
+
+                speak('Closing')
+                window_title = ' '.join(query[1:])
+
+                # Close Word window
+                word_window = gw.getWindowsWithTitle(window_title)
+                if word_window:
+                    word_window[0].close()
+                    time.sleep(2)  # Add a delay to allow time for the window to close
+                else:
+                    print(f"Window with title '{window_title}' not found.")
 
 
             if query[0] == 'keyboard':
@@ -152,24 +217,60 @@ if __name__ == '__main__':
 
                         if appControl == 'search':
                             pyautogui.hotkey('ctrl', 'l')
+                            
                         elif appControl == 'enable typing':
                             listener = sr.Recognizer()
                             speak('What would you like to write?')
 
-                            with sr.Microphone() as source:
-                                listener.pause_threshold = 2
-                                input_speech = listener.listen(source)
+                            while True:
+                                with sr.Microphone() as source:
+                                    listener.pause_threshold = 2
+                                    try:
+                                        input_speech = listener.listen(source, timeout=10)
+                                        print('Recognizing speech...')
+                                        writeCommand = listener.recognize_google(input_speech, language='en_gb')
+                                        print(f'The input speech was: {writeCommand}')
 
-                            try:
-                                print('Recognizing speech...')
-                                writeCommand = listener.recognize_google(input_speech, language='en_gb')
-                                print(f'The input speech was: {writeCommand}')
-                                pyautogui.write(writeCommand, interval = 0.1)
+                                        # Check if the user wants to stop typing
+                                        if writeCommand.lower() == 'stop typing':
+                                            speak('Exiting typing mode.')
+                                            break  # Exit the loop and typing mode
 
-                            except Exception as exception:
-                                print('Sorry, I did not catch that')
-                                speak('Sorry, I did not catch that')
-                                print(exception)
+                                        pyautogui.write(writeCommand, interval=0.1)
+
+                                    except sr.UnknownValueError:
+                                        print('Sorry, I did not catch that')
+                                        speak('Sorry, I did not catch that')
+                                    except Exception as exception:
+                                        print(f'An error occurred: {exception}')
+                                        speak('An error occurred. Please try again.')
+
+                        elif appControl == 'save':                            
+                            pyautogui.hotkey('ctrl', 's')
+                            time.sleep(2)
+                            listener = sr.Recognizer()
+                            speak('What would you like to name the file?')
+
+                            while True:
+                                with sr.Microphone() as source:
+                                    listener.pause_threshold = 2
+                                    try:
+                                        input_speech = listener.listen(source, timeout=10)
+                                        print('Recognizing speech...')
+                                        fileName = listener.recognize_google(input_speech, language='en_gb')
+                                        print(f'The input speech was: {fileName}')
+                                        pyautogui.write(fileName, interval = 0.1)
+                                        pyautogui.hotkey('enter')
+                                        time.sleep(2)
+                                        pyautogui.hotkey('enter')
+                                        break
+
+                                    except sr.UnknownValueError:
+                                        print('Sorry, I did not catch that')
+                                        speak('Sorry, I did not catch that')
+                                    except Exception as exception:
+                                        print(f'An error occurred: {exception}')
+                                        speak('An error occurred. Please try again.')
 
                         elif appControl == 'press enter':
                             for key in ['enter']:
@@ -222,6 +323,7 @@ if __name__ == '__main__':
                                 pyautogui.press(key)
 
                         elif appControl == 'lower volume':
+                            x = 0
                             while x<=10:
                                 for key in ['volumedown']:
                                     pyautogui.press(key)
@@ -253,17 +355,3 @@ if __name__ == '__main__':
                         speak('Sorry, I did not catch that')
                         print(exception)
                     
-                
-
-            if query[0] == 'search':
-                speak('Searching...')
-                query = ' '.join(query[1:])
-                webbrowser.open('https://www.google.com/search?q=' + query)
-
-            if query[0] == 'what' and query[1] == 'time' and query[2] == 'is' and query[3] == 'it':
-                speech = datetime.datetime.now().strftime("%H:%M")
-                speak(speech)
-
-            if query[0] == 'exit':
-                speak('Goodbye')
-                break

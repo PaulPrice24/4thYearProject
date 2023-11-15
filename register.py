@@ -1,10 +1,12 @@
 import sys
 import typing
 import mysql.connector
+import bcrypt
 from PyQt5.QtWidgets import QWidget, QLineEdit
 from PyQt5.QtWidgets import QApplication
 from PyQt5 import QtCore, QtGui
-
+from tkinter import *
+import tkinter.messagebox
 from registerGUI import Ui_Form
 
 mydb = mysql.connector.connect(
@@ -28,16 +30,21 @@ class register(QWidget):
         emailInput = self.registerUI.lineEdit_2.text()
         dateInput = self.registerUI.dateEdit.text()
         passwordInput = self.registerUI.lineEdit_4.text()
+        password = passwordInput.encode('utf-8')
+        password = bcrypt.hashpw(password, bcrypt.gensalt())
         if nameInput == '':
             print("Please fill in all fields!")
+            tkinter.messagebox.showinfo("Error",  "Please fill in all fields!")
         elif emailInput == '':
             print("Please fill in all fields!")
+            tkinter.messagebox.showinfo("Error",  "Please fill in all fields!")
         elif passwordInput == '':
             print("Please fill in all fields!")
+            tkinter.messagebox.showinfo("Error",  "Please fill in all fields!")
         else:
             mycursor = mydb.cursor()
             sqlFormula = "INSERT INTO userinfo (name, email, dob, password) VALUES (%s, %s, %s, %s)"
-            user = (nameInput, emailInput, dateInput, passwordInput)
+            user = (nameInput, emailInput, dateInput, password)
             mycursor.execute(sqlFormula, user)
             mydb.commit()
 
