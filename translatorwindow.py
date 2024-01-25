@@ -20,6 +20,7 @@ class Ui_Translator(object):
         self.pushButton_2 = QtWidgets.QPushButton(Translator)
         self.pushButton_2.setGeometry(QtCore.QRect(10, 10, 61, 51))
         self.pushButton_2.setStyleSheet("border-image: url(C:/Users/paulj/OneDrive/Desktop/GUIimages/menu.png);")
+        self.pushButton_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_2.setText("")
         self.pushButton_2.setObjectName("pushButton_2")
 

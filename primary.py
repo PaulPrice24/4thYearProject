@@ -13,8 +13,10 @@ class mainFile(QWidget):
         self.mainUI = Ui_Form()
         self.mainUI.setupUi(self)
 
+        self.mainUI.pushButton.clicked.connect(self.Menu)
         self.mainUI.pushButton_2.clicked.connect(self.Logout)
         self.mainUI.pushButton_3.clicked.connect(self.VoiceAssistant)
+        self.mainUI.pushButton_4.clicked.connect(self.Help)
 
         self.mainUI.movie = QtGui.QMovie("C:\\Users\\paulj\\OneDrive\\Desktop\\GUIimages\\ai.gif")
         self.mainUI.label.setMovie(self.mainUI.movie)
@@ -25,11 +27,21 @@ class mainFile(QWidget):
         self.close()
         call(["python", "mainPage.py"])
 
+    def Menu(self):
+        from subprocess import call
+        self.close()
+        call(["python", "menu.py"])
+
     def VoiceAssistant(self):
         self.voice_process = QProcess()
         self.voice_process.readyReadStandardOutput.connect(self.read_output)
         self.voice_process.readyReadStandardError.connect(self.read_error)
         self.voice_process.start("python", ["main.py"])
+
+    def Help(self):
+        from subprocess import call
+        self.close()
+        call(["python", "instructionFunction.py"])
 
     def read_output(self):
         codec = QTextCodec.codecForLocale()

@@ -16,12 +16,19 @@ class TextToSpeech(QWidget):
 
         self.tts.pushButton.clicked.connect(self.TextToSpeech)
 
+        self.tts.pushButton_2.clicked.connect(self.Menu)
+
     def TextToSpeech(self):
         text = self.tts.plainTextEdit.toPlainText()
 
         engine = pyttsx3.init()
         engine.say(text)
         engine.runAndWait()
+
+    def Menu(self):
+        from subprocess import call
+        self.close()
+        call(["python", "menu.py"])
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -8,7 +8,12 @@ import wmi
 import time
 import openai
 import pygetwindow as gw
+import sounddevice as sd
+import psutil
 from dotenv import load_dotenv
+from ctypes import cast, POINTER
+from comtypes import CLSCTX_ALL
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 load_dotenv()
 
 #Speech engine initialisation
@@ -46,6 +51,8 @@ def parseCommand():
     print('Listening for a command')
 
     with sr.Microphone() as source:
+        print('Listening')
+        speak('Listening')
         listener.pause_threshold = 2
         input_speech = listener.listen(source)
 
@@ -66,6 +73,7 @@ if __name__ == '__main__':
     speak('Welcome, how may I help you today?')
 
     while True:
+        
         # parse as list
         query = parseCommand().lower().split()
 
@@ -98,6 +106,8 @@ if __name__ == '__main__':
                         speak('What would you like to play?')
 
                         with sr.Microphone() as source:
+                            print('Listening')
+                            speak('Listening')
                             listener.pause_threshold = 2
                             input_speech = listener.listen(source)
 
@@ -119,18 +129,6 @@ if __name__ == '__main__':
 
                         spotify_window = gw.getWindowsWithTitle("Spotify")[0]
                         spotify_window.minimize()
-
-                        is_music_playing = True
-
-                        while True:
-                            f = wmi.WMI() 
-                            # Iterating through all the running processes 
-                            for process in f.Win32_Process(): 
-                                if "spotify" == process.Name: 
-                                    time.sleep(10)
-                                    break
-                                else:
-                                    is_music_playing = False
 
                         break  # Exit the loop if successful
                     except sr.UnknownValueError:
@@ -183,7 +181,7 @@ if __name__ == '__main__':
                     time.sleep(2)
                     pyautogui.press(key)
 
-            if query[0] == 'close':
+            if query[0] == 'terminate':
 
                 speak('Closing')
                 window_title = ' '.join(query[1:])
@@ -207,6 +205,8 @@ if __name__ == '__main__':
                     speak('Keyboard Control enabled')
 
                     with sr.Microphone() as source:
+                        print('Listening')
+                        speak('Listening')
                         listener.pause_threshold = 2
                         input_speech = listener.listen(source)
 
@@ -224,6 +224,8 @@ if __name__ == '__main__':
 
                             while True:
                                 with sr.Microphone() as source:
+                                    print('Listening')
+                                    speak('Listening')
                                     listener.pause_threshold = 2
                                     try:
                                         input_speech = listener.listen(source, timeout=10)
@@ -253,6 +255,8 @@ if __name__ == '__main__':
 
                             while True:
                                 with sr.Microphone() as source:
+                                    print('Listening')
+                                    speak('Listening')
                                     listener.pause_threshold = 2
                                     try:
                                         input_speech = listener.listen(source, timeout=10)
