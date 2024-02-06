@@ -10,6 +10,8 @@ import openai
 import pygetwindow as gw
 import sounddevice as sd
 import psutil
+from phue import Bridge
+from ip_address import bridge_ip_address
 from dotenv import load_dotenv
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
@@ -27,6 +29,11 @@ activationWord = 'computer'
 chrome_path = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
 webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
 
+#light connection
+b = Bridge(bridge_ip_address)
+b.get_api()
+b.get_light('Champs room')
+
 def speak(text, rate =120): #rate is speed of AI voice
     engine.setProperty('rate', rate)
     engine.say(text)
@@ -37,7 +44,7 @@ def query_openai(prompt = ""):
     openai.api_key = os.environ['OPENAI_API_KEY']
 
     response = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo-instruct",
         prompt=prompt,
         temperature=0.5,
         max_tokens=100,
@@ -162,6 +169,18 @@ if __name__ == '__main__':
             if query[0] == 'what' and query[1] == 'is' and query[2] == 'the' and query[3] == 'time':
                 speech = datetime.datetime.now().strftime("%H:%M")
                 speak(speech)
+
+            if query[0] == 'turn' and query[1] == 'off':
+                b.set_light('Champs room', 'on', False)
+
+            if query[0] == 'turn' and query[1] == 'on':
+                b.set_light('Champs room', 'on', True)
+
+            if query[0] == 'increase':
+                b.set_light('Champs room', 'bri', 254)
+
+            if query[0] == 'dim':
+                b.set_light('Champs room', 'bri', 80)
 
             if query[0] == 'exit':
                 speak('Goodbye')

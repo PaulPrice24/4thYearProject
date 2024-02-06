@@ -1,10 +1,13 @@
+import os
 import sys
+from gtts import gTTS
 import speech_recognition as sr
 import pyttsx3
 from googletrans import Translator
+from playsound import playsound
 
 def translate_language(sentence, dest_language):
-    translator = Translator()
+    translator = Translator(service_urls=['translate.google.com'])
     translation = translator.translate(sentence, dest=dest_language)
     return translation.text
 
@@ -40,9 +43,23 @@ def main():
                 else:
                     translated_sentence = translate_language(user_input, dest_language)
                     print(f"{translated_sentence}")
-                    engine = pyttsx3.init()
-                    engine.say(translated_sentence)
-                    engine.runAndWait()
+                    if dest_language == "french":
+                        v1 = "fr"
+                    elif dest_language == "spanish":
+                        v1 = "es"
+                    elif dest_language == "german":
+                        v1 = "de"
+                    elif dest_language == "dutch":
+                        v1 = "nl"
+                    elif dest_language == "polish":
+                        v1 = "pl"
+                    elif dest_language == "irish":
+                        v1 = "ga"
+                    
+                    voice = gTTS(translated_sentence, v1)
+                    voice.save("voice.mp3")
+                    playsound("voice.mp3")
+                    os.remove("voice.mp3")
 
         except KeyboardInterrupt:
             break
