@@ -1,4 +1,0 @@
-2024-02-23 01:02:30,686 - tensorflow - WARNING - From C:\Users\paulj\AppData\Local\Programs\Python\Python311\Lib\site-packages\tf2onnx\tf_loader.py:68: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
-
-2024-02-23 01:02:31,646 - tensorflow - WARNING - From C:\Users\paulj\AppData\Local\Programs\Python\Python311\Lib\site-packages\tf2onnx\tf_loader.py:72: The name tf.train.import_meta_graph is deprecated. Please use tf.compat.v1.train.import_meta_graph instead.
-

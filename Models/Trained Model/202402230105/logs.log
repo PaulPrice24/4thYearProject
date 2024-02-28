@@ -1,6 +1,0 @@
-2024-02-23 01:06:03,637 - tensorflow - WARNING - From C:\Users\paulj\AppData\Local\Programs\Python\Python311\Lib\site-packages\tf2onnx\tf_loader.py:68: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
-
-2024-02-23 01:06:04,615 - tensorflow - WARNING - From C:\Users\paulj\AppData\Local\Programs\Python\Python311\Lib\site-packages\tf2onnx\tf_loader.py:72: The name tf.train.import_meta_graph is deprecated. Please use tf.compat.v1.train.import_meta_graph instead.
-
-2024-02-23 01:06:16,892 - tensorflow - WARNING - From C:\Users\paulj\AppData\Local\Programs\Python\Python311\Lib\site-packages\keras\src\utils\tf_utils.py:492: The name tf.ragged.RaggedTensorValue is deprecated. Please use tf.compat.v1.ragged.RaggedTensorValue instead.
-
