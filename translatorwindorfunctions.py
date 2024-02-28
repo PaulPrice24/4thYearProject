@@ -35,7 +35,6 @@ class Translator(QWidget):
         combo_box.addItem("German")
         combo_box.addItem("Dutch")
         combo_box.addItem("Polish")
-        combo_box.addItem("Irish")
 
         combo_box.currentTextChanged.connect(self.set_current_language)
         self.current_language_text = ""

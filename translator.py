@@ -2,9 +2,8 @@ import os
 import sys
 from gtts import gTTS
 import speech_recognition as sr
-import pyttsx3
 from googletrans import Translator
-from playsound import playsound
+import pygame
 
 def translate_language(sentence, dest_language):
     translator = Translator(service_urls=['translate.google.com'])
@@ -33,6 +32,20 @@ def main():
         return
 
     dest_language = sys.argv[1].lower()
+    v1 = ""
+
+    if dest_language == "french":
+        v1 = "fr"
+    elif dest_language == "spanish":
+        v1 = "es"
+    elif dest_language == "german":
+        v1 = "de"
+    elif dest_language == "dutch":
+        v1 = "nl"
+    elif dest_language == "polish":
+        v1 = "pl"
+
+    pygame.mixer.init()
 
     while True:
         try:
@@ -43,24 +56,10 @@ def main():
                 else:
                     translated_sentence = translate_language(user_input, dest_language)
                     print(f"{translated_sentence}")
-                    if dest_language == "french":
-                        v1 = "fr"
-                    elif dest_language == "spanish":
-                        v1 = "es"
-                    elif dest_language == "german":
-                        v1 = "de"
-                    elif dest_language == "dutch":
-                        v1 = "nl"
-                    elif dest_language == "polish":
-                        v1 = "pl"
-                    elif dest_language == "irish":
-                        v1 = "ga"
-                    
-                    voice = gTTS(translated_sentence, v1)
+                    voice = gTTS(translated_sentence, lang=v1)
                     voice.save("voice.mp3")
-                    playsound("voice.mp3")
-                    os.remove("voice.mp3")
-
+                    pygame.mixer.Sound("voice.mp3").play()
+                    os.remove("voice.mp3")  # Remove the sound file after playing
         except KeyboardInterrupt:
             break
 

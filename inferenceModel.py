@@ -24,11 +24,11 @@ if __name__ == "__main__":
     from tqdm import tqdm
     from mltu.configs import BaseModelConfigs
 
-    configs = BaseModelConfigs.load("Models/05_sound_to_text/202302051936/configs.yaml")
+    configs = BaseModelConfigs.load("Models/Trained Model/202402231748/configs.yaml")
 
     model = WavToTextModel(model_path=configs.model_path, char_list=configs.vocab, force_cpu=False)
 
-    df = pd.read_csv("Models/05_sound_to_text/202302051936/val.csv").values.tolist()
+    df = pd.read_csv("Models/Trained Model/202402231748/val.csv").values.tolist()
 
     accum_cer, accum_wer = [], []
     for wav_path, label in tqdm(df):
