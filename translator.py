@@ -3,6 +3,7 @@ import sys
 from gtts import gTTS
 import speech_recognition as sr
 from googletrans import Translator
+import azure.cognitiveservices.speech as speechsdk
 import pygame
 
 def translate_language(sentence, dest_language):
@@ -11,15 +12,22 @@ def translate_language(sentence, dest_language):
     return translation.text
 
 def recognize_speech():
-    recognizer = sr.Recognizer()
+    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+    region = 'uksouth'
+    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
 
-    with sr.Microphone() as source:
-        print("Say something...")
-        recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source)
+    # Set up the speech configuration
+    speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
+    speech_config.endpoint_id = endpoint_id
+
+    listener = speechsdk.SpeechRecognizer(speech_config=speech_config)
+
+    print('Say something...')
+    # Create a speech recognizer
+    result = listener.recognize_once()
 
     try:
-        user_input = recognizer.recognize_google(audio)
+        user_input = result.text
         print(f"User said: {user_input}")
         return user_input.lower()
     except sr.UnknownValueError:
@@ -44,22 +52,35 @@ def main():
         v1 = "nl"
     elif dest_language == "polish":
         v1 = "pl"
+    elif dest_language == "portuguese":
+        v1 = "pt"
+    elif dest_language == "russian":
+        v1 = "ru"
+    elif dest_language == "italian":
+        v1 = "it"
 
     pygame.mixer.init()
 
+    audio_finished = True
+
     while True:
         try:
-            user_input = recognize_speech()
-            if user_input:
-                if user_input == "exit":
-                    break
-                else:
-                    translated_sentence = translate_language(user_input, dest_language)
-                    print(f"{translated_sentence}")
-                    voice = gTTS(translated_sentence, lang=v1)
-                    voice.save("voice.mp3")
-                    pygame.mixer.Sound("voice.mp3").play()
-                    os.remove("voice.mp3")  # Remove the sound file after playing
+            if audio_finished:
+                user_input = recognize_speech()
+                if user_input:
+                    if user_input == "exit.":
+                        break
+                    else:
+                        translated_sentence = translate_language(user_input, dest_language)
+                        print(f"{translated_sentence}")
+                        voice = gTTS(translated_sentence, lang=v1)
+                        voice.save("voice.mp3")
+                        pygame.mixer.Sound("voice.mp3").play()
+                        os.remove("voice.mp3")  # Remove the sound file after playing
+                        audio_finished = False
+            else:
+                if not pygame.mixer.get_busy():
+                    audio_finished = True
         except KeyboardInterrupt:
             break
 

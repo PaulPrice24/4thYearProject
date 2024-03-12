@@ -24,9 +24,9 @@ def transcribe_live_audio(subscription_key, region, endpoint_id):
             print("Error details:", cancellation_details.error_details)
 
 if __name__ == "__main__":
-    subscription_key = 'acc78bfd447a4a838dd4f31f3de95a7e'
-    region = 'westeurope'
-    endpoint_id = 'e6fa38b2-d6a3-4ca6-a120-45877d9be4db'
+    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+    region = 'uksouth'
+    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
 
     # Call the function for live transcription from microphone input
     transcribe_live_audio(subscription_key, region, endpoint_id)

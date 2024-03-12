@@ -11,7 +11,7 @@ import pygetwindow as gw
 import sounddevice as sd
 import psutil
 import azure.cognitiveservices.speech as speechsdk
-from phue import Bridge
+from phue import Bridge, PhueRequestTimeout
 from ip_address import bridge_ip_address
 from dotenv import load_dotenv
 from ctypes import cast, POINTER
@@ -31,9 +31,14 @@ chrome_path = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
 webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(chrome_path))
 
 #light connection
-b = Bridge(bridge_ip_address)
-b.get_api()
-b.get_light('Champs room')
+try:
+    b = Bridge(bridge_ip_address)
+    b.get_api()
+    b.get_light('Champs room')
+except PhueRequestTimeout:
+    print("Bridge not detected")
+except Exception as e:
+    print("Bridge not detected", e)
 
 def speak(text, rate =120): #rate is speed of AI voice
     engine.setProperty('rate', rate)
@@ -55,9 +60,9 @@ def query_openai(prompt = ""):
     return response.choices[0].text
 
 def parseCommand():
-    subscription_key = 'acc78bfd447a4a838dd4f31f3de95a7e'
-    region = 'westeurope'
-    endpoint_id = 'e6fa38b2-d6a3-4ca6-a120-45877d9be4db'
+    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+    region = 'uksouth'
+    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
 
     # Set up the speech configuration
     speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
@@ -65,12 +70,11 @@ def parseCommand():
 
     listener = speechsdk.SpeechRecognizer(speech_config=speech_config)
 
-    with sr.Microphone() as source:
-        print('Listening')
-        speak('Listening')
-        # Create a speech recognizer
-        result = listener.recognize_once()
-        result.pause_threshold = 2
+    print('Listening')
+    speak('Listening')
+    # Create a speech recognizer
+    result = listener.recognize_once()
+    result.pause_threshold = 2
 
     try:
         print('Recognizing speech...')
@@ -93,12 +97,21 @@ if __name__ == '__main__':
         # parse as list
         query = parseCommand().lower().split()
 
-        query[0] = query[0].rstrip('.!?')
+        if len(query) == 0:
+            speak("Sorry, I didn't catch that.")
+            continue
+
+        query[0] = query[0].rstrip(',.!?')
 
         if query[0] == activationWord:
             query.pop(0)
 
-            # list commands
+            if len(query) == 0:
+                speak("Sorry, I didn't catch that.")
+                continue
+            else:
+                query[0] = query[0].rstrip(',.!?')
+
             if query[0] == 'say':
                 if 'hello' in query:
                     speak('Hello, nice to meet you')
@@ -114,9 +127,9 @@ if __name__ == '__main__':
                 webbrowser.get('chrome').open_new(query)
             
             if query[0] == 'play' and query[1] == 'music.':
-                    subscription_key = 'acc78bfd447a4a838dd4f31f3de95a7e'
-                    region = 'westeurope'
-                    endpoint_id = 'e6fa38b2-d6a3-4ca6-a120-45877d9be4db'
+                    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+                    region = 'uksouth'
+                    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
 
                     # Set up the speech configuration
                     speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
@@ -124,30 +137,29 @@ if __name__ == '__main__':
 
                     listener = speechsdk.SpeechRecognizer(speech_config=speech_config)
 
-                    with sr.Microphone() as source:
-                        print('What would you like to play?')
-                        speak('What would you like to play?')
-                        # Create a speech recognizer
-                        result = listener.recognize_once()
-                        result.pause_threshold = 2
-                        song = result.text
+                    print('What would you like to play?')
+                    speak('What would you like to play?')
+                    # Create a speech recognizer
+                    result = listener.recognize_once()
+                    result.pause_threshold = 2
+                    song = result.text
                 
-                        print(f'Playing {song}')
+                    print(f'Playing {song}')
 
-                        os.system("spotify")
-                        speak('Opening Spotify')
-                        time.sleep(10)
-                        pyautogui.hotkey('ctrl', 'l')
+                    os.system("spotify")
+                    speak('Opening Spotify')
+                    time.sleep(10)
+                    pyautogui.hotkey('ctrl', 'l')
+                    time.sleep(2)
+                    pyautogui.write(song, interval=0.1)
+
+                    for key in ['enter', 'tab', 'enter', 'tab', 'enter']:
                         time.sleep(2)
-                        pyautogui.write(song, interval=0.1)
 
-                        for key in ['enter', 'tab', 'enter', 'tab', 'enter']:
-                            time.sleep(2)
+                        pyautogui.press(key)
 
-                            pyautogui.press(key)
-
-                        spotify_window = gw.getWindowsWithTitle("Spotify")[0]
-                        spotify_window.minimize()
+                    spotify_window = gw.getWindowsWithTitle("Spotify")[0]
+                    spotify_window.minimize()
 
             if query[0] == 'question':
                 query.pop(0)
@@ -181,7 +193,11 @@ if __name__ == '__main__':
             if query[0] == 'dim':
                 b.set_light('Champs room', 'bri', 80)
 
-            if query[0] == 'exit.':
+            if query[0] == 'exits':
+                speak('Goodbye')
+                break
+
+            if query[0] == 'exit':
                 speak('Goodbye')
                 break
 
@@ -213,7 +229,7 @@ if __name__ == '__main__':
                 else:
                     print(f"Window with title '{window_title}' not found.")
 
-            if query[0] == 'keyboard.':
+            if query[0] == 'keyboard':
                 query.pop(0)
                 
                 x = 1
@@ -221,9 +237,9 @@ if __name__ == '__main__':
                 while x == 1:
                     speak('Keyboard Control enabled')
 
-                    subscription_key = 'acc78bfd447a4a838dd4f31f3de95a7e'
-                    region = 'westeurope'
-                    endpoint_id = 'e6fa38b2-d6a3-4ca6-a120-45877d9be4db'
+                    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+                    region = 'uksouth'
+                    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
 
                     # Set up the speech configuration
                     speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
@@ -231,13 +247,11 @@ if __name__ == '__main__':
 
                     listener = speechsdk.SpeechRecognizer(speech_config=speech_config)
 
-                    speak("Listening")
-
-                    with sr.Microphone() as source:
-                        # Create a speech recognizer
-                        result = listener.recognize_once()
-                        result.pause_threshold = 2
-                        appControl = result.text
+                    speak('Listening')
+                    # Create a speech recognizer
+                    result = listener.recognize_once()
+                    result.pause_threshold = 2
+                    appControl = result.text
 
                     try:
                         print('Recognizing speech...')
@@ -250,9 +264,9 @@ if __name__ == '__main__':
                             speak('What would you like to write?')
 
                             while True:
-                                subscription_key = 'acc78bfd447a4a838dd4f31f3de95a7e'
-                                region = 'westeurope'
-                                endpoint_id = 'e6fa38b2-d6a3-4ca6-a120-45877d9be4db'
+                                subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+                                region = 'uksouth'
+                                endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
 
                                 # Set up the speech configuration
                                 speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
@@ -260,59 +274,55 @@ if __name__ == '__main__':
 
                                 listener = speechsdk.SpeechRecognizer(speech_config=speech_config)
 
-                                with sr.Microphone() as source:
-                                    # Create a speech recognizer
-                                    result = listener.recognize_once()
-                                    result.pause_threshold = 2
-                                    writeCommand = result.text
+                                # Create a speech recognizer
+                                result = listener.recognize_once()
+                                result.pause_threshold = 2
+                                writeCommand = result.text
 
-                                    # Check if the user wants to stop typing
-                                    if writeCommand.lower() == 'Stop typing.':
-                                        speak('Exiting typing mode.')
-                                        break  # Exit the loop and typing mode
-                                    elif writeCommand.lower() == 'Stop typing':
-                                        speak('Exiting typing mode.')
-                                        break  # Exit the loop and typing mode
-                                    elif writeCommand.lower() == 'Stop Typing.':
-                                        speak('Exiting typing mode.')
-                                        break  # Exit the loop and typing mode
-                                    elif writeCommand.lower() == 'stop typing.':
-                                        speak('Exiting typing mode.')
-                                        break  # Exit the loop and typing mode
-                                    elif writeCommand.lower() == 'stop typing':
-                                        speak('Exiting typing mode.')
-                                        break  # Exit the loop and typing mode
-                                    else:
-                                        pyautogui.write(writeCommand, interval=0.1)
+                                # Check if the user wants to stop typing
+                                if writeCommand.lower() == 'Stop typing.':
+                                    speak('Exiting typing mode.')
+                                    break  # Exit the loop and typing mode
+                                elif writeCommand.lower() == 'Stop typing':
+                                    speak('Exiting typing mode.')
+                                    break  # Exit the loop and typing mode
+                                elif writeCommand.lower() == 'Stop Typing.':
+                                    speak('Exiting typing mode.')
+                                    break  # Exit the loop and typing mode
+                                elif writeCommand.lower() == 'stop typing.':
+                                    speak('Exiting typing mode.')
+                                    break  # Exit the loop and typing mode
+                                elif writeCommand.lower() == 'stop typing':
+                                    speak('Exiting typing mode.')
+                                    break  # Exit the loop and typing mode
+                                else:
+                                    pyautogui.write(writeCommand, interval=0.1)
+                                    pyautogui.press('space')
 
                         elif appControl == 'Save.':                            
                             pyautogui.hotkey('ctrl', 's')
                             time.sleep(2)
-                            listener = sr.Recognizer()
+                            subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+                            region = 'uksouth'
+                            endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
+
+                            # Set up the speech configuration
+                            speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
+                            speech_config.endpoint_id = endpoint_id
+
                             speak('What would you like to name the file?')
 
-                            while True:
-                                with sr.Microphone() as source:
-                                    print('Listening')
-                                    speak('Listening')
-                                    listener.pause_threshold = 2
-                                    try:
-                                        input_speech = listener.listen(source, timeout=10)
-                                        print('Recognizing speech...')
-                                        fileName = listener.recognize_google(input_speech, language='en_gb')
-                                        print(f'The input speech was: {fileName}')
-                                        pyautogui.write(fileName, interval = 0.1)
-                                        pyautogui.hotkey('enter')
-                                        time.sleep(2)
-                                        pyautogui.hotkey('enter')
-                                        break
+                            listener = speechsdk.SpeechRecognizer(speech_config=speech_config)
+                            result = listener.recognize_once()
+                            result.pause_threshold = 2
 
-                                    except sr.UnknownValueError:
-                                        print('Sorry, I did not catch that')
-                                        speak('Sorry, I did not catch that')
-                                    except Exception as exception:
-                                        print(f'An error occurred: {exception}')
-                                        speak('An error occurred. Please try again.')
+                            text = result.text
+                
+                            pyautogui.write(text, interval = 0.1)
+                            pyautogui.hotkey('enter')
+                            time.sleep(2)
+                            pyautogui.hotkey('enter')
+                            break
 
                         elif appControl == 'Press Enter.':
                             for key in ['enter']:
@@ -387,6 +397,9 @@ if __name__ == '__main__':
                                 pyautogui.press(key)
 
                         elif appControl == 'Exit.':
+                            break
+
+                        elif appControl == 'Exits.':
                             break
 
                         else:
