@@ -8,8 +8,9 @@ from PyQt5 import QtCore, QtGui
 from primaryPage import Ui_Form
 
 class mainFile(QWidget):
-    def __init__(self):
+    def __init__(self, name):
         super(mainFile, self).__init__()
+        self.name = name
         self.mainUI = Ui_Form()
         self.mainUI.setupUi(self)
 
@@ -36,7 +37,10 @@ class mainFile(QWidget):
         self.voice_process = QProcess()
         self.voice_process.readyReadStandardOutput.connect(self.read_output)
         self.voice_process.readyReadStandardError.connect(self.read_error)
-        self.voice_process.start("python", ["main.py"])
+        command = "python main.py"
+        if self.name:
+            command += f" {self.name}"
+        self.voice_process.start(command)
 
     def Help(self):
         from subprocess import call
@@ -57,6 +61,7 @@ class mainFile(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ui = mainFile()
+    name = sys.argv[1] if len(sys.argv) > 1 else None  
+    ui = mainFile(name)  
     ui.show()
     sys.exit(app.exec_())

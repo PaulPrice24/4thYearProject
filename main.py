@@ -3,6 +3,7 @@ import speech_recognition as sr
 import pyttsx3
 import webbrowser
 import pyautogui
+import sys
 import os
 import wmi
 import time
@@ -11,6 +12,7 @@ import pygetwindow as gw
 import sounddevice as sd
 import psutil
 import azure.cognitiveservices.speech as speechsdk
+from primary import mainFile
 from phue import Bridge, PhueRequestTimeout
 from ip_address import bridge_ip_address
 from dotenv import load_dotenv
@@ -88,9 +90,11 @@ def parseCommand():
     
     return query
 
-# main loop
-if __name__ == '__main__':
-    speak('Welcome, how may I help you today?')
+def main(name):
+    if name is not None:
+        speak(f"Welcome {name}, how may I help you today?")
+    else:
+        speak("Welcome, how may I help you today?")
 
     while True:
         
@@ -410,3 +414,8 @@ if __name__ == '__main__':
                         speak('Sorry, I did not catch that')
                         print(exception)
                     
+
+# main loop
+if __name__ == '__main__':
+    name = sys.argv[1] if len(sys.argv) > 1 else None
+    main(name)

@@ -30,16 +30,19 @@ class login(QWidget):
         passwordInput = self.loginUI.password.text()
         password = passwordInput.encode('utf-8')
 
-        mycursor = mydb.cursor()
+        mycursor = mydb.cursor(buffered=True)
         sql = "SELECT password FROM userinfo WHERE email=%s"
         mycursor.execute(sql, (emailInput,))
         stored_hashed_password = mycursor.fetchone()
 
         if stored_hashed_password:
             if bcrypt.checkpw(password, stored_hashed_password[0].encode('utf-8')):
+                sql = "SELECT name FROM userinfo WHERE email=%s"
+                mycursor.execute(sql, (emailInput,))
+                name = mycursor.fetchone()[0]  
                 from subprocess import call
                 self.close()
-                call(["python", "primary.py"])
+                call(["python", "primary.py", name])  
             else:
                 print("Invalid login")
                 tkinter.messagebox.showinfo("Error", "Invalid Login")
