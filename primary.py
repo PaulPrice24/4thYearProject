@@ -8,9 +8,10 @@ from PyQt5 import QtCore, QtGui
 from primaryPage import Ui_Form
 
 class mainFile(QWidget):
-    def __init__(self, name):
+    def __init__(self, name, dob):
         super(mainFile, self).__init__()
         self.name = name
+        self.dob = dob
         self.mainUI = Ui_Form()
         self.mainUI.setupUi(self)
 
@@ -40,6 +41,8 @@ class mainFile(QWidget):
         command = "python main.py"
         if self.name:
             command += f" {self.name}"
+        if self.dob:
+            command += f" {self.dob}"
         self.voice_process.start(command)
 
     def Help(self):
@@ -61,7 +64,8 @@ class mainFile(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    name = sys.argv[1] if len(sys.argv) > 1 else None  
-    ui = mainFile(name)  
+    name = sys.argv[1] if len(sys.argv) > 1 else None
+    dob = sys.argv[2] if len(sys.argv) > 2 else None
+    ui = mainFile(name, dob)  
     ui.show()
     sys.exit(app.exec_())

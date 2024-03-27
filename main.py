@@ -11,7 +11,10 @@ import openai
 import pygetwindow as gw
 import sounddevice as sd
 import psutil
+import webbrowser
+import requests
 import azure.cognitiveservices.speech as speechsdk
+from datetime import datetime
 from primary import mainFile
 from phue import Bridge, PhueRequestTimeout
 from ip_address import bridge_ip_address
@@ -90,7 +93,7 @@ def parseCommand():
     
     return query
 
-def main(name):
+def main(name, dob):
     if name is not None:
         speak(f"Welcome {name}, how may I help you today?")
     else:
@@ -126,9 +129,40 @@ def main(name):
 
             # Navigation
             if query[0] == 'go' and query[1] == 'to':
-                speak('Opening...')
-                query = ' '.join(query[2:])
-                webbrowser.get('chrome').open_new(query)
+                if dob is not None:
+                    date_of_birth = datetime.strptime(dob, '%d/%m/%Y')
+                    current_date = datetime.now()
+                    age = current_date.year - date_of_birth.year - ((current_date.month, current_date.day) < (date_of_birth.month, date_of_birth.day))
+                    if age >=18:
+                        speak('Opening...')
+                        query = ' '.join(query[2:])
+                        query = ''.join(query.split())
+                        if query.endswith('.'):
+                            query = query[:-1]
+                        webbrowser.get('chrome').open_new(query)
+                    else:
+                        query = ' '.join(query[2:])
+                        query = ''.join(query.split())
+                        if query.endswith('.'):
+                            query = query[:-1]
+                        query = query.strip()
+                        url = ("https://website-categorization.whoisxmlapi.com/api/v3?apiKey=at_KlecTE0RJuj0ADd41FIQpol4XAmuT&url=https://" + query)
+                        response = requests.get(url)
+                        if response.status_code == 200:
+                            data = response.json()
+                            categories = data.get("categories", [])
+                            for category_info in categories:
+                                category_name = category_info.get("name")
+                            if category_name == "Gambling" or category_name == "Adult and Pornography" or category_name == "Violence":
+                                speak("I'm sorry, but it appears you are not old enough to access this website.")
+                            else:
+                                speak('Opening...')
+                                webbrowser.get('chrome').open_new(query)
+                else:
+                    speak('Opening...')
+                    query = ' '.join(query[2:])
+                    query = ''.join(query.split())
+                    webbrowser.get('chrome').open_new(query)
             
             if query[0] == 'play' and query[1] == 'music.':
                     subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
@@ -177,14 +211,6 @@ def main(name):
                 query = ' '.join(query[1:])
                 webbrowser.open('https://www.google.com/search?q=' + query)
 
-            if query[0] == 'what' and query[1] == 'time' and query[2] == 'is' and query[3] == 'it?':
-                speech = datetime.datetime.now().strftime("%H:%M")
-                speak(speech)
-
-            if query[0] == 'what' and query[1] == 'is' and query[2] == 'the' and query[3] == 'time?':
-                speech = datetime.datetime.now().strftime("%H:%M")
-                speak(speech)
-
             if query[0] == 'turn' and query[1] == 'off':
                 b.set_light('Champs room', 'on', False)
 
@@ -224,6 +250,9 @@ def main(name):
                 window_title = ' '.join(query[1:])
 
                 window_title = window_title.rstrip('.!?')
+
+                if window_title.endswith('s'):
+                            window_title = window_title[:-1]
 
                 # Close Word window
                 word_window = gw.getWindowsWithTitle(window_title)
@@ -418,4 +447,5 @@ def main(name):
 # main loop
 if __name__ == '__main__':
     name = sys.argv[1] if len(sys.argv) > 1 else None
-    main(name)
+    dob = sys.argv[2] if len(sys.argv) > 2 else None
+    main(name, dob)
