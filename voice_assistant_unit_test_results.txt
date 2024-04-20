@@ -1,0 +1,10 @@
+test_controlling_keyboard_actions (__main__.TestVoiceAssistant.test_controlling_keyboard_actions) ... ok
+test_controlling_lights (__main__.TestVoiceAssistant.test_controlling_lights) ... ok
+test_opening_and_terminating_applications (__main__.TestVoiceAssistant.test_opening_and_terminating_applications) ... ok
+test_opening_web_pages (__main__.TestVoiceAssistant.test_opening_web_pages) ... ok
+test_playing_music (__main__.TestVoiceAssistant.test_playing_music) ... ok
+test_querying_openai (__main__.TestVoiceAssistant.test_querying_openai) ... ok
+test_speech_recognition_and_command_parsing (__main__.TestVoiceAssistant.test_speech_recognition_and_command_parsing) ... ok
+test_text_to_speech_functionality (__main__.TestVoiceAssistant.test_text_to_speech_functionality) ... ok
+test_playing_music (__main__.TestVoiceAssistant.test_playing_music) ... ok
+test_text_to_speech_functionality (__main__.TestVoiceAssistant.test_text_to_speech_functionality)... ok

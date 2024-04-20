@@ -1,0 +1,4 @@
+test_invalid_login (__main__.TestLogin.test_invalid_login) ... ok
+test_user_not_found (__main__.TestLogin.test_user_not_found) ... ok
+test_valid_login (__main__.TestLogin.test_valid_login) ... ok
+test_register (__main__.TestRegister.test_register) ... ok
