@@ -12,9 +12,9 @@ def translate_language(sentence, dest_language):
     return translation.text
 
 def recognize_speech():
-    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+    subscription_key = 'SUBSCRIPTION_KEY'
     region = 'uksouth'
-    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
+    endpoint_id = 'ENDPOINT_ID'
 
     # Set up the speech configuration
     speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
