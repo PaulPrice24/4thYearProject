@@ -65,31 +65,21 @@ The voice assistant is a speech recognition model trained using Microsoft Azure.
 
 ## Screenshots
 ![Primary Page](images/PrimaryPage.png)
-*Figure 1: Primary Page*
 
 ![Register Page](images/Register.png)
-*Figure 2: Register Page*
 
 ![Login Page](images/Login.png)
-*Figure 3: Login Page*
 
 ![Home Page](images/HomePage.png)
-*Figure 4: Home Page*
 
 ![Help Page](images/Help.png)
-*Figure 5: Help Page*
 
 ![Menu Page](images/Menu.png)
-*Figure 6: Menu Page*
 
 ![Translator Page](images/Translator.png)
-*Figure 7: Translator Page*
 
 ![Translator Page](images/Translator2.png)
-*Figure 8: Translator Page*
 
 ![Text-to-Speech Page](images/Text-to-speech.png)
-*Figure 9: Text-to-Speech Page*
 
 ![Eye Tracker Page](images/EyeTracker.png)
-*Figure 10: Eye Tracker Page*
