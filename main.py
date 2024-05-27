@@ -65,9 +65,9 @@ def query_openai(prompt = ""):
     return response.choices[0].text
 
 def parseCommand():
-    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+    subscription_key = 'SUBSCRIPTION_KEY'
     region = 'uksouth'
-    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
+    endpoint_id = 'ENDPOINT_ID'
 
     # Set up the speech configuration
     speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
@@ -165,9 +165,9 @@ def main(name, dob):
                     webbrowser.get('chrome').open_new(query)
             
             if query[0] == 'play' and query[1] == 'music.':
-                    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+                    subscription_key = 'SUBSCRIPTION_KEY'
                     region = 'uksouth'
-                    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
+                    endpoint_id = 'ENDPOINT_ID'
 
                     # Set up the speech configuration
                     speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
@@ -270,9 +270,9 @@ def main(name, dob):
                 while x == 1:
                     speak('Keyboard Control enabled')
 
-                    subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+                    subscription_key = 'SUBSCRIPTION_KEY'
                     region = 'uksouth'
-                    endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
+                    endpoint_id = 'ENDPOINT_ID'
 
                     # Set up the speech configuration
                     speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
@@ -297,9 +297,9 @@ def main(name, dob):
                             speak('What would you like to write?')
 
                             while True:
-                                subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+                                subscription_key = 'SUBSCRIPTION_KEY'
                                 region = 'uksouth'
-                                endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
+                                endpoint_id = 'ENDPOINT_ID'
 
                                 # Set up the speech configuration
                                 speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
@@ -335,9 +335,9 @@ def main(name, dob):
                         elif appControl == 'Save.':                            
                             pyautogui.hotkey('ctrl', 's')
                             time.sleep(2)
-                            subscription_key = 'edbf4e1e76a74812a8bbe8db38e59678'
+                            subscription_key = 'SUBSCRIPTION_KEY'
                             region = 'uksouth'
-                            endpoint_id = 'c55e3bc9-4ff2-4d13-b74b-c29249653a79'
+                            endpoint_id = 'ENDPOINT_ID'
 
                             # Set up the speech configuration
                             speech_config = speechsdk.SpeechConfig(subscription=subscription_key, region=region)
